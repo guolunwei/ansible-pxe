@@ -1,0 +1,64 @@
+# kickstart file for CentOS 7
+
+#platform=x86, AMD64, or Intel EM64T
+#version=DEVEL
+
+# Install OS instead of upgrade
+install
+
+# Use network installation
+url --url="ftp://10.0.0.10/pub/centos7"
+
+# Keyboard layouts
+keyboard 'us'
+
+# System language
+lang en_US
+
+# System authorization information
+auth  --useshadow  --passalgo=sha512
+
+# Root password
+# The root password is crypted for sage sake, please generate a password with the following command
+#   perl -e 'print crypt("centos\@me",q($1$password)),"\n"'
+rootpw --iscrypted $1$password$ovbNmDYj1nLqD7QPOhHbY1
+
+# Use text mode install
+text
+
+# Reboot after installation
+reboot
+
+# System timezone
+timezone Asia/Shanghai
+
+# SELinux configuration
+selinux --disabled
+
+# Do not configure the X Window System
+skipx
+
+# Firewall configuration
+firewall --disabled
+
+# Network information
+network --bootproto=dhcp --device=ens33
+network --hostname=centos7
+
+# System bootloader configuration
+bootloader --location=mbr
+
+# Clear the Master Boot Record
+zerombr
+
+# Partition clearing information
+clearpart --all --initlabel
+
+# Disk partitioning information
+autopart --type=plain --fstype=ext4
+
+%packages
+@^minimal
+@core
+
+%end

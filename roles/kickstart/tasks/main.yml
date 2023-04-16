@@ -1,0 +1,94 @@
+---
+- name: insall packages
+  yum:
+    name: ['dnsmasq', 'syslinux', 'vsftpd']
+    state: present
+    update_cache: yes
+
+- name: create folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ ftp_root }}/centos7"
+    - "{{ tftp_root }}/centos7"
+    - "{{ tftp_root }}/pxelinux.cfg"
+
+- name: mount iso image
+  mount:
+    path: "{{ ftp_root }}/centos7"
+    src: "{{ cdrom }}"
+    fstype: iso9660
+    state: mounted
+
+- name: copy boot modules
+  synchronize:
+    src: "{{ item }}"
+    dest: "{{ tftp_root }}"
+  with_items: 
+    - /usr/share/syslinux/chain.c32
+    - /usr/share/syslinux/mboot.c32
+    - /usr/share/syslinux/memdisk
+    - /usr/share/syslinux/menu.c32
+    - /usr/share/syslinux/pxelinux.0
+
+- name: copy boot images
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tftp_root }}/centos7"
+  with_items:
+    - "{{ ftp_root }}/centos7/images/pxeboot/vmlinuz"
+    - "{{ ftp_root }}/centos7/images/pxeboot/initrd.img"
+
+- name: generate dnsmasq config
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+  notify:
+    - restart dnsmasq
+
+- name: generate unattended install
+  template:
+    src: ks.cfg.j2
+    dest: "{{ ftp_root }}/ks.cfg"
+  notify:
+    - restart ftp
+
+- name: generate default menu
+  template:
+    src: default.j2
+    dest: "{{ tftp_root }}/pxelinux.cfg/default"
+  notify:
+    - restart dnsmasq
+
+- name: ensure services are started
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: 
+    - dnsmasq
+    - vsftpd
+
+- name: allow services in firewall
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items:
+    - dhcp
+    - ftp
+
+- name: allow ports in firewall
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items:
+    - 69/udp
+    - 4011/udp
+
+- name: disable seliunx
+  selinux:
+    state: disabled

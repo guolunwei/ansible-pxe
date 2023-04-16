@@ -1,0 +1,6 @@
+---
+tftp_root: /var/lib/tftpboot/kickstart
+ftp_root: /var/ftp/pub
+cdrom: /dev/sr1
+os_name: CentOS 7 x64
+ks_url: ftp://10.0.0.10/pub/ks.cfg

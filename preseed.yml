@@ -1,0 +1,8 @@
+---
+- name: setup preseed server
+  hosts: localhost
+  gather_facts: no
+  become: yes
+  
+  roles:
+    - preseed
