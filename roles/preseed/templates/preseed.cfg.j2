@@ -31,8 +31,8 @@ d-i mirror/ftp/directory string /pub/bionic
 # To create a normal user account.
 d-i passwd/user-fullname string Ubuntu User
 d-i passwd/username string ubuntu
-d-i passwd/user-password password insecure
-d-i passwd/user-password-again password insecure
+d-i passwd/user-password password ubuntu
+d-i passwd/user-password-again password ubuntu
 d-i user-setup/allow-password-weak boolean true
 
 # You may set this to any valid setting for $TZ; see the contents of
@@ -58,6 +58,13 @@ d-i partman-partitioning/confirm_write_new_label boolean true
 d-i partman/choose_partition select finish
 d-i partman/confirm boolean true
 d-i partman/confirm_nooverwrite boolean true
+
+# Force grub install to /dev/sda
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+d-i grub-installer/bootdev  string /dev/sda
+#d-i grub-installer/bootdev  string default
+#d-i grub-installer/early_command string debconf-set grub-installer/bootdev "$(list-devices disk | head -n1)"
 
 # Avoid that last message about the install being complete.
 d-i finish-install/reboot_in_progress note
