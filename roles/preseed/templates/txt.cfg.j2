@@ -3,7 +3,7 @@ label install
 	menu label ^Install {{ os_name }}
 	menu default
 	kernel ubuntu-installer/amd64/linux
-	append auto=true priority=critical url={{ preseed_url }} vga=788 initrd=ubuntu-installer/amd64/initrd.gz --- quiet 
+	append auto=true priority=critical url={{ preseed_url }} interface=ens33 vga=788 initrd=ubuntu-installer/amd64/initrd.gz --- quiet 
 label cli
 	menu label ^Command-line install
 	kernel ubuntu-installer/amd64/linux
