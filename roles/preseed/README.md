@@ -13,6 +13,11 @@ Configure the PXE boot server with a fixed IP address 10.0.0.10 on the NIC which
 ansible-playbook preseed.yml
 ```
 
+SELinux state temporarily changed from 'enforcing' to 'permissive'. State change will take effect next reboot.
+```
+reboot
+```
+
 To test FTP Installation Source network path:
 
 ```

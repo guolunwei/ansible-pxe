@@ -1,6 +1,6 @@
 ---
 tftp_root: /var/lib/tftpboot/preseed
 ftp_root: /var/ftp/pub
-cdrom: /dev/sr0
+cdrom: /dev/sr1
 os_name: Ubuntu 18.04.6 TLS
 preseed_url: ftp://10.0.0.10/pub/preseed.cfg
